@@ -1,6 +1,8 @@
 package com.example.abhisheikh.locationplusalarm;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
@@ -71,6 +73,15 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                 alarmList.remove(position);
                 Toast.makeText(context,"Alarm "+position+" Deleted",Toast.LENGTH_SHORT).show();
                 notifyDataSetChanged();
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,EditAlarmActivity.class);
+                intent.putExtra("alarm",alarmList.get(position));
+                ((AppCompatActivity)context).startActivityForResult(intent,1);
             }
         });
 
