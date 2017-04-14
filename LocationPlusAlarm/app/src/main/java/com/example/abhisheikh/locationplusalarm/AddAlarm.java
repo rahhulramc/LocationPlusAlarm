@@ -1,11 +1,12 @@
 package com.example.abhisheikh.locationplusalarm;
 
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class AddAlarm extends AppCompatActivity {
+public class AddAlarm extends AppCompatActivity implements GoogleMapFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,5 +22,10 @@ public class AddAlarm extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

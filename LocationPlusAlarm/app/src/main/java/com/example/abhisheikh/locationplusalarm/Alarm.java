@@ -8,6 +8,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Alarm {
 
+    /*
+    Set defaults
+     */
+
     private LatLng location;
     private String locationName;
     private String label;
@@ -15,6 +19,10 @@ public class Alarm {
     private int ringtoneId;
     private boolean active;
     private boolean vibrate;
+
+    public Alarm(LatLng location){
+        this.location = location;
+    }
 
     public Alarm(LatLng location, String label, int range, int ringtoneId, boolean active, boolean vibrate) {
         this.location = location;

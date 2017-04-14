@@ -20,7 +20,7 @@ public class CategoryAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            return new MapFragment();
+            return new GoogleMapFragment();
         } else {
             return new PNRFragment();
         }
