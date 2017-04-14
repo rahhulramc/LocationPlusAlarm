@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#673Ab7</color>
+    <color name="colorPrimaryDark">#673ab7</color>
     <color name="colorAccent">#01579B</color>
     <color name="colorPrimaryLight">#9575CD</color>
     <color name="colorTextIcons">#FFFFFF</color>
@@ -10,4 +10,5 @@
     <color name="colorDivider">#BDBDBD</color>
     <color name="circleStroke">#407CB342</color>
     <color name="circleFill">#40FFF176</color>
+    <color name="colorPlus">#FFFFFF</color>
 </resources>
