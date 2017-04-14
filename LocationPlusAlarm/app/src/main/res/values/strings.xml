@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Location+ Alarm</string>
+    <string name="action_settings">Settings</string>
 </resources>
