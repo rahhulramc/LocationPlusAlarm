@@ -1,4 +1,4 @@
-package com.example.abhisheikh.locationplusalarm;
+package com.example.abhisheikh.locationplusalarm.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.abhisheikh.locationplusalarm.Alarm;
+import com.example.abhisheikh.locationplusalarm.R;
+import com.example.abhisheikh.locationplusalarm.activity.EditAlarmActivity;
 
 import java.util.List;
 
@@ -56,6 +60,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         Alarm alarm = alarmList.get(position);
         holder.nameTextView.setText(alarm.getLocationName());
         holder.labelTextView.setText(alarm.getLabel());
+        holder.alarmActivateSwitch.setChecked(alarm.isActive());
         holder.alarmActivateSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +86,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             public void onClick(View view) {
                 Intent intent = new Intent(context,EditAlarmActivity.class);
                 intent.putExtra("alarm",alarmList.get(position));
+                intent.putExtra("position",""+position);
                 ((AppCompatActivity)context).startActivityForResult(intent,1);
             }
         });

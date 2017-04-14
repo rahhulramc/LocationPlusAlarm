@@ -1,4 +1,4 @@
-package com.example.abhisheikh.locationplusalarm;
+package com.example.abhisheikh.locationplusalarm.activity;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.abhisheikh.locationplusalarm.Alarm;
+import com.example.abhisheikh.locationplusalarm.adapter.AlarmAdapter;
+import com.example.abhisheikh.locationplusalarm.R;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -61,7 +64,7 @@ public class AlarmListActivity extends AppCompatActivity {
 
     private void prepareAlarmData(){
         alarmList.add(new Alarm(new LatLng(29.869419, 77.894877),
-                "Ravi","Get well soon",30, 0, false, false));
+                "Ravi","Get well soon",30, 0, true, true));
         alarmList.add(new Alarm(new LatLng(29.870026, 77.895118),
                 "Bharat","Get well soon",30, 0, false, false));
         alarmList.add(new Alarm(new LatLng(29.8699363,77.8946516),
@@ -73,6 +76,22 @@ public class AlarmListActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1){
+            if(resultCode==RESULT_OK){
+                Alarm alarm = data.getParcelableExtra("alarm");
+                String position = data.getStringExtra("position");
+                if(position==null){
+                    alarm.setActive(true);
+                    alarmList.add(alarm);
+                    alarmAdapter.notifyDataSetChanged();
+                }
+                else{
+                    int pos = Integer.parseInt(position);
+                    alarmList.set(pos,alarm);
+                    alarmAdapter.notifyDataSetChanged();
+                }
+            }
+        }
     }
 
     @Override

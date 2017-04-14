@@ -5,15 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.abhisheikh.locationplusalarm.AddAlarm">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/addAlarmToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        />
+    tools:context="com.example.abhisheikh.locationplusalarm.activity.AddAlarm">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"

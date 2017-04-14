@@ -1,9 +1,13 @@
-package com.example.abhisheikh.locationplusalarm;
+package com.example.abhisheikh.locationplusalarm.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.example.abhisheikh.locationplusalarm.R;
+import com.example.abhisheikh.locationplusalarm.fragment.GoogleMapFragment;
+import com.example.abhisheikh.locationplusalarm.fragment.PNRFragment;
 
 /**
  * Created by Aman Saurabh on 4/14/2017.

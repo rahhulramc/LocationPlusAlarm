@@ -21,15 +21,15 @@
             android:value="@integer/google_play_services_version"/>
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBjrUpAVvaTzpcJJPteN3LHro7ZFji2EMI"/>
-        <activity android:name=".AlarmListActivity">
+        <activity android:name=".activity.AlarmListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddAlarm" />
-        <activity android:name=".EditAlarmActivity"></activity>
+        <activity android:name=".activity.AddAlarm" />
+        <activity android:name=".activity.EditAlarmActivity"></activity>
     </application>
 
 </manifest>

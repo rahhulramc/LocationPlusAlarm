@@ -1,8 +1,8 @@
-package com.example.abhisheikh.locationplusalarm;
+package com.example.abhisheikh.locationplusalarm.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.abhisheikh.locationplusalarm.Alarm;
+import com.example.abhisheikh.locationplusalarm.R;
+import com.example.abhisheikh.locationplusalarm.activity.EditAlarmActivity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,6 +28,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -42,6 +47,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
     boolean mapReady = false;
     Circle circle;
     Marker marker;
+    Context context;
 
     private OnFragmentInteractionListener mListener;
 
@@ -75,6 +81,8 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_google_map, container, false);
+
+        context = getActivity();
 
         mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -147,9 +155,38 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
         m_map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-
+                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                List<Address> addresses = null;
+                try {
+                    addresses = geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String locationName = addresses.get(0).getFeatureName() + ", " +
+                        addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " +
+                        addresses.get(0).getCountryName();
+                Alarm alarm = new Alarm(latLng, locationName);
+                Intent intent = new Intent(getContext(),EditAlarmActivity.class);
+                intent.putExtra("alarm",alarm);
+                startActivityForResult(intent,1);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1){
+            if(resultCode==RESULT_OK){
+                Alarm alarm = data.getParcelableExtra("alarm");
+                String position = data.getStringExtra("position");
+                Intent intent = new Intent();
+                intent.putExtra("alarm",alarm);
+                intent.putExtra("position",position);
+                ((Activity)context).setResult(RESULT_OK,intent);
+                ((Activity)context).finish();
+            }
+        }
     }
 
     /**

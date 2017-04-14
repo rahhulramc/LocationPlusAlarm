@@ -1,4 +1,4 @@
-package com.example.abhisheikh.locationplusalarm;
+package com.example.abhisheikh.locationplusalarm.activity;
 
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
@@ -6,7 +6,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class AddAlarm extends AppCompatActivity implements GoogleMapFragment.OnFragmentInteractionListener{
+import com.example.abhisheikh.locationplusalarm.adapter.CategoryAdapter;
+import com.example.abhisheikh.locationplusalarm.fragment.GoogleMapFragment;
+import com.example.abhisheikh.locationplusalarm.R;
+
+public class AddAlarm extends AppCompatActivity implements GoogleMapFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,4 +32,5 @@ public class AddAlarm extends AppCompatActivity implements GoogleMapFragment.OnF
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 }

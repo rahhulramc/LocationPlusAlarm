@@ -24,8 +24,9 @@ public class Alarm implements Parcelable {
     private boolean active;
     private boolean vibrate;
 
-    public Alarm(LatLng location){
+    public Alarm(LatLng location, String locationName){
         this.location = location;
+        this.locationName = locationName;
     }
 
     public Alarm(LatLng location, String label, int range, int ringtoneId, boolean active, boolean vibrate) {
@@ -38,7 +39,8 @@ public class Alarm implements Parcelable {
         this.locationName = null;
     }
 
-    public Alarm(LatLng location, String locationName, String label, int range, int ringtoneId, boolean active, boolean vibrate) {
+    public Alarm(LatLng location, String locationName, String label, int range,
+                 int ringtoneId, boolean active, boolean vibrate) {
         this.location = location;
         this.locationName = locationName;
         this.label = label;
