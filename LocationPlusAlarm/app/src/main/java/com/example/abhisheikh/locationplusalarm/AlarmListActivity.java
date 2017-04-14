@@ -1,11 +1,14 @@
 package com.example.abhisheikh.locationplusalarm;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -22,6 +25,15 @@ public class AlarmListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_list);
+
+        FloatingActionButton floatingActionButton = (FloatingActionButton)findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AddAlarm.class);
+                startActivityForResult(intent,1);
+            }
+        });
 
         alarmRecyclerView = (RecyclerView)findViewById(R.id.alarmRecyclerView);
 
@@ -48,5 +60,10 @@ public class AlarmListActivity extends AppCompatActivity {
                 "Purushottam","Get well soon",30, 0, false, false));
 
         alarmAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
