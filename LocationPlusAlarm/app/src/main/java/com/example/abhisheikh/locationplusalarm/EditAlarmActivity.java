@@ -13,8 +13,5 @@ public class EditAlarmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_alarm);
         Intent intent = getIntent();
         Alarm alarm = (Alarm)intent.getParcelableExtra("alarm");
-
-        TextView textView = (TextView)findViewById(R.id.editAlarmText);
-        textView.setText(alarm.getLocationName());
     }
 }
