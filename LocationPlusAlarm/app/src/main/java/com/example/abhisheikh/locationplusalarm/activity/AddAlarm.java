@@ -9,8 +9,10 @@ import android.os.Bundle;
 import com.example.abhisheikh.locationplusalarm.adapter.CategoryAdapter;
 import com.example.abhisheikh.locationplusalarm.fragment.GoogleMapFragment;
 import com.example.abhisheikh.locationplusalarm.R;
+import com.example.abhisheikh.locationplusalarm.fragment.PNRFragment;
 
-public class AddAlarm extends AppCompatActivity implements GoogleMapFragment.OnFragmentInteractionListener {
+public class AddAlarm extends AppCompatActivity implements GoogleMapFragment.OnFragmentInteractionListener,
+        PNRFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
