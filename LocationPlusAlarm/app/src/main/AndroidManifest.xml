@@ -32,6 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".geofence.GeoFenceTransitionsIntentService"/>
         <activity android:name=".activity.AddAlarm" />
         <activity android:name=".activity.EditAlarmActivity" />
     </application>

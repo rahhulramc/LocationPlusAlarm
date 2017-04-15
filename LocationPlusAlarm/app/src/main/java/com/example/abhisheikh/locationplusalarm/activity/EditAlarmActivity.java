@@ -1,41 +1,55 @@
 package com.example.abhisheikh.locationplusalarm.activity;
 
+import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.RingtoneManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abhisheikh.locationplusalarm.Alarm;
 import com.example.abhisheikh.locationplusalarm.R;
+import com.example.abhisheikh.locationplusalarm.geofence.GeoFenceTransitionsIntentService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class EditAlarmActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
-    TextView rangeTextView, ringtoneTextView;
     EditText labelEditText, currentLocationEditText, destinationEditText;
     Spinner rangeSpinner, ringtoneSpinner;
     SwitchCompat vibrationRadioButton;
     Button saveAlarmButton;
-    String position,currentLocationName;
+    String position, currentLocationName;
     Alarm alarm;
     Location myLocation;
 
@@ -46,10 +60,10 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_alarm);
         Intent intent = getIntent();
-        alarm = (Alarm)intent.getParcelableExtra("alarm");
+        alarm = (Alarm) intent.getParcelableExtra("alarm");
         position = intent.getStringExtra("position");
 
-        if(mGoogleApiClient==null) {
+        if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -63,46 +77,145 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         setOnClickListeners();
     }
 
-    private void setIds(){
-        rangeTextView = (TextView)findViewById(R.id.rangeTextView);
-        labelEditText = (EditText)findViewById(R.id.labelEditText);
-        currentLocationEditText = (EditText)findViewById(R.id.current_location_textview);
-        destinationEditText = (EditText)findViewById(R.id.destinationEditText);
-        ringtoneTextView = (TextView)findViewById(R.id.ringtoneTextView);
-        rangeSpinner= (Spinner)findViewById(R.id.range_value);
-        ringtoneSpinner = (Spinner)findViewById(R.id.spinner_ringtone);
+    private void setIds() {
+        labelEditText = (EditText) findViewById(R.id.labelEditText);
+        currentLocationEditText = (EditText) findViewById(R.id.current_location_textview);
+        destinationEditText = (EditText) findViewById(R.id.destinationEditText);
+        rangeSpinner = (Spinner) findViewById(R.id.range_value);
+        ringtoneSpinner = (Spinner) findViewById(R.id.spinner_ringtone);
+        setSpinner();
         vibrationRadioButton = (SwitchCompat) findViewById(R.id.vibrationRadioButton);
-        saveAlarmButton = (Button)findViewById(R.id.saveAlarmButton);
+        saveAlarmButton = (Button) findViewById(R.id.saveAlarmButton);
     }
 
-    private void setInitialValuesOfAlarm(Alarm alarm){
+    private void setSpinner(){
+        List<String> ringtoneList =  new ArrayList<>();
+        Map<String, String> ringtoneMap = getRingtoneMap();
+
+        for(Map.Entry<String,String> entry : ringtoneMap.entrySet()){
+            ringtoneList.add(entry.getKey());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, ringtoneList);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ringtoneSpinner.setAdapter(adapter);
+    }
+
+    public Map<String, String> getRingtoneMap() {
+        RingtoneManager manager = new RingtoneManager(this);
+        manager.setType(RingtoneManager.TYPE_ALARM);
+        Cursor cursor = manager.getCursor();
+
+        Map<String, String> list = new HashMap<>();
+        while (cursor.moveToNext()) {
+            String notificationTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
+            String notificationUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
+
+            list.put(notificationTitle, notificationUri);
+        }
+
+        return list;
+    }
+
+    private void setInitialValuesOfAlarm(Alarm alarm) {
         labelEditText.setText(alarm.getLabel());
-        rangeTextView.setText(Integer.toString(alarm.getRange()));
         destinationEditText.setText(alarm.getLocationName());
-        ringtoneTextView.setText(Integer.toString(alarm.getRingtoneId()));
+        //Toast.makeText(getBaseContext(),""+alarm.getRange(),Toast.LENGTH_SHORT).show();
+        String [] rangeList = getResources().getStringArray(R.array.range);
+        int rangeIndex = 3;
+        for(int i = 0;i<rangeList.length;i++){
+            if(rangeList[i].equals(""+alarm.getRange()))
+                rangeIndex = i;
+        }
+        rangeSpinner.setSelection(rangeIndex);
         vibrationRadioButton.setChecked(alarm.isVibrate());
     }
 
-    private void setOnClickListeners(){
+    private void setOnClickListeners() {
+
         saveAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alarm.setLabel(labelEditText.getText().toString());
                 alarm.setLocationName(destinationEditText.getText().toString());
-                alarm.setRange(500);
-                alarm.setRingtoneId(0);
+                alarm.setRange(Integer.parseInt(rangeSpinner.getSelectedItem().toString()));
+                alarm.setRingtoneId(ringtoneSpinner.getSelectedItem().toString());
                 alarm.setVibrate(vibrationRadioButton.isChecked());
+
+                if (position == null){
+                    alarm.setRange(500);
+                    //addGeofence(alarm);
+                }
+
                 Intent intent = new Intent();
-                intent.putExtra("alarm",alarm);
-                intent.putExtra("position",position);
-                setResult(RESULT_OK,intent);
+                intent.putExtra("alarm", alarm);
+                intent.putExtra("position", position);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
     }
 
+    public void addGeofence(Alarm alarm) {
+        /*if (!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnecting()) {
+            Toast.makeText(this,"Google API Client is not connected",Toast.LENGTH_SHORT).show();
+            return;
+        }*/
+
+        Geofence geofence = new Geofence.Builder()
+                .setRequestId(alarm.getLocationName())
+                .setCircularRegion(alarm.getLocation().latitude,
+                        alarm.getLocation().longitude,
+                        alarm.getRange())
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setExpirationDuration(864000)
+                .build();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.GeofencingApi.addGeofences(
+                mGoogleApiClient,
+                getGeofencingRequest(geofence),
+                getGeofencePendingIntent()
+        ).setResultCallback(this);
+    }
+
+    private GeofencingRequest getGeofencingRequest(Geofence geofence){
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofence(geofence);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent(){
+        Intent intent = new Intent(this,GeoFenceTransitionsIntentService.class);
+
+        PendingIntent pendingIntent = PendingIntent.getService(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntent;
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         currentLocationName = getCurrentLocationName(myLocation);
         currentLocationEditText.setText(currentLocationName);
@@ -145,5 +258,10 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
     protected void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
+
     }
 }

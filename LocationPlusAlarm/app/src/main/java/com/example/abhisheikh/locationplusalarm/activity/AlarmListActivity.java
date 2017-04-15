@@ -81,7 +81,7 @@ public class AlarmListActivity extends AppCompatActivity {
                 String label = cr.getString(2);
                 String locationName = cr.getString(3);
                 int range = Integer.parseInt(cr.getString(4));
-                int ringtoneID = Integer.parseInt(cr.getString(5));
+                String ringtoneID = (cr.getString(5));
                 boolean active = (Integer.parseInt(cr.getString(6))!=0);
                 boolean vibration = (Integer.parseInt(cr.getString(7))!=0);
 

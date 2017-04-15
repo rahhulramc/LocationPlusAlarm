@@ -1,5 +1,6 @@
 package com.example.abhisheikh.locationplusalarm;
 
+import android.app.PendingIntent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -20,14 +21,16 @@ public class Alarm implements Parcelable {
     private String locationName;
     private String label;
     private int range; // In meters
-    private int ringtoneId;
+    private String ringtoneId;
     private boolean active;
     private boolean vibrate;
+    private PendingIntent pendingIntent;
 
     public Alarm(LatLng location, String locationName){
         this.location = location;
         this.locationName = locationName;
         this.vibrate = true;
+        pendingIntent = null;
     }
 
     public Alarm(Alarm alarm){
@@ -40,7 +43,7 @@ public class Alarm implements Parcelable {
         this.vibrate = alarm.isVibrate();
     }
 
-    public Alarm(LatLng location, String label, int range, int ringtoneId, boolean active, boolean vibrate) {
+    public Alarm(LatLng location, String label, int range, String ringtoneId, boolean active, boolean vibrate) {
         this.location = location;
         this.label = label;
         this.range = range;
@@ -51,7 +54,7 @@ public class Alarm implements Parcelable {
     }
 
     public Alarm(LatLng location, String locationName, String label, int range,
-                 int ringtoneId, boolean active, boolean vibrate) {
+                 String ringtoneId, boolean active, boolean vibrate) {
         this.location = location;
         this.locationName = locationName;
         this.label = label;
@@ -66,7 +69,7 @@ public class Alarm implements Parcelable {
         this.locationName = in.readString();
         this.label = in.readString();
         this.range = in.readInt();
-        this.ringtoneId = in.readInt();
+        this.ringtoneId = in.readString();
         this.active = (in.readInt() != 0);
         this.vibrate = (in.readInt() != 0);
     }
@@ -95,11 +98,11 @@ public class Alarm implements Parcelable {
         this.range = range;
     }
 
-    public int getRingtoneId() {
+    public String getRingtoneId() {
         return ringtoneId;
     }
 
-    public void setRingtoneId(int ringtoneId) {
+    public void setRingtoneId(String ringtoneId) {
         this.ringtoneId = ringtoneId;
     }
 
@@ -138,7 +141,7 @@ public class Alarm implements Parcelable {
         parcel.writeString(locationName);
         parcel.writeString(label);
         parcel.writeInt(range);
-        parcel.writeInt(ringtoneId);
+        parcel.writeString(ringtoneId);
         parcel.writeInt(active ? 1:0);
         parcel.writeInt(vibrate ? 1:0);
     }

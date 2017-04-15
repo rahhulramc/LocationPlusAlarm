@@ -1,8 +1,10 @@
 package com.example.abhisheikh.locationplusalarm.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -10,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +52,7 @@ import static android.app.Activity.RESULT_OK;
  * create an instance of this fragment.
  */
 public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     MapFragment mapFragment;
     GoogleMap m_map;
@@ -95,7 +98,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
         context = getActivity();
 
-        if(mGoogleApiClient==null) {
+        if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(context)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -140,13 +143,13 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         setMapClickListeners();
     }
 
-    private void setMapClickListeners(){
+    private void setMapClickListeners() {
         m_map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                if(circle!=null)
+                if (circle != null)
                     circle.remove();
-                if(marker!=null)
+                if (marker != null)
                     marker.remove();
                 MarkerOptions mMarkerOption = new MarkerOptions().position(latLng);
                 CircleOptions mCircleOption = new CircleOptions()
@@ -159,11 +162,11 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
                 Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
                 try {
-                    List<Address> addresses = geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
-                    if(!addresses.isEmpty()){
-                        Toast.makeText(getContext(),addresses.get(0).getFeatureName() + ", " +
-                                addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " +
-                                addresses.get(0).getCountryName(),Toast.LENGTH_SHORT).show();
+                    List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                    if (!addresses.isEmpty()) {
+                        Toast.makeText(getContext(), addresses.get(0).getFeatureName() + ", " +
+                                addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " +
+                                addresses.get(0).getCountryName(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -177,17 +180,23 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                 Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
                 List<Address> addresses = null;
                 try {
-                    addresses = geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
+                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 String locationName = addresses.get(0).getFeatureName() + ", " +
-                        addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " +
+                        addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " +
                         addresses.get(0).getCountryName();
                 Alarm alarm = new Alarm(latLng, locationName);
-                Intent intent = new Intent(getContext(),EditAlarmActivity.class);
-                intent.putExtra("alarm",alarm);
-                startActivityForResult(intent,1);
+
+                if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.disconnect();
+                }
+                Toast.makeText(context,""+mGoogleApiClient.isConnected(),Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getContext(), EditAlarmActivity.class);
+                intent.putExtra("alarm", alarm);
+                startActivityForResult(intent, 1);
             }
         });
     }
@@ -195,15 +204,15 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1){
-            if(resultCode==RESULT_OK){
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
                 Alarm alarm = data.getParcelableExtra("alarm");
                 String position = data.getStringExtra("position");
                 Intent intent = new Intent();
-                intent.putExtra("alarm",alarm);
-                intent.putExtra("position",position);
-                ((Activity)context).setResult(RESULT_OK,intent);
-                ((Activity)context).finish();
+                intent.putExtra("alarm", alarm);
+                intent.putExtra("position", position);
+                ((Activity) context).setResult(RESULT_OK, intent);
+                ((Activity) context).finish();
             }
         }
     }
@@ -255,4 +264,9 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         super.onStop();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mGoogleApiClient.disconnect();
+    }
 }

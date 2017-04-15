@@ -105,9 +105,10 @@
                 <LinearLayout
                     android:id="@+id/range_linear"
                     android:orientation="vertical"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true">
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="16dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -117,25 +118,16 @@
                         android:text="Range"
                         android:paddingBottom="4dp"/>
 
-                    <TextView
-                        android:id="@+id/rangeTextView"
-                        android:layout_width="wrap_content"
+                    <Spinner
+                        android:id="@+id/range_value"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorPrimaryText"
-                        android:paddingTop="4dp"
-                        android:text="5 km"/>
-                </LinearLayout>
+                        android:prompt="@string/range_prompt"
+                        android:entries="@array/range"
+                        android:background="@android:drawable/btn_dropdown"
+                        />
 
-                <Spinner
-                    android:id="@+id/range_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/range_linear"
-                    />
+                </LinearLayout>
 
             </RelativeLayout>
 
@@ -148,9 +140,10 @@
                 <LinearLayout
                     android:id="@+id/spinner_linear"
                     android:orientation="vertical"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true">
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="16dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -159,26 +152,13 @@
                         android:textColor="@color/colorSecondaryText"
                         android:text="Ringtone"
                         android:paddingBottom="4dp"/>
-
-                    <TextView
-                        android:id="@+id/ringtoneTextView"
-                        android:layout_width="wrap_content"
+                    <Spinner
+                        android:id="@+id/spinner_ringtone"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorPrimaryText"
-                        android:paddingTop="4dp"
-                        android:text="SA RE GA MA PA"/>
+                        android:background="@android:drawable/btn_dropdown"
+                        />
                 </LinearLayout>
-
-                <Spinner
-                    android:id="@+id/spinner_ringtone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/spinner_linear"
-                    />
 
             </RelativeLayout>
             <RelativeLayout

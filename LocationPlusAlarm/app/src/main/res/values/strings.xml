@@ -12,4 +12,26 @@
     <string name="enter_pnr">Enter PNR</string>
     <string name="invalid_pnr">INVALID PNR!</string>
     <string name="add">Add</string>
+    <string name="add_geofence">Add Geofence</string>
+    <string name="geofence_transition_entered">Entered</string>
+    <string name="geofence_transition_exited">Left</string>
+    <string name="unknown_geofence_transition">Don\'t Know</string>
+    <string name="geofence_transition_notification_text">Click here to open</string>
+    <string name="geofence_transition_invalid_type">Invalid Transition</string>
+    <string name="geofence_not_available">Geofence Not Available</string>
+    <string name="geofence_too_many_geofences">Too many Geofences</string>
+    <string name="geofence_too_many_pending_intents">Too many Pending Intents</string>
+    <string name="unknown_geofence_error">Unknown Geofence Error</string>
+    <string name="not_connected">Google API Client not connected</string>
+    <string name="range_prompt">Select Range</string>
+    <string-array name="range">
+        <item>Choose a range (in metres)</item>
+        <item>100</item>
+        <item>200</item>
+        <item>500</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>5000</item>
+        <item>10000</item>
+    </string-array>
 </resources>
