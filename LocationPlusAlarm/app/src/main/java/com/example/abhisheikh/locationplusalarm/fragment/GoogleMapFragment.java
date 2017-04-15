@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +19,14 @@ import android.widget.Toast;
 import com.example.abhisheikh.locationplusalarm.Alarm;
 import com.example.abhisheikh.locationplusalarm.R;
 import com.example.abhisheikh.locationplusalarm.activity.EditAlarmActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -40,14 +48,17 @@ import static android.app.Activity.RESULT_OK;
  * Use the {@link GoogleMapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
+public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     MapFragment mapFragment;
     GoogleMap m_map;
     boolean mapReady = false;
     Circle circle;
     Marker marker;
+    Location myLocation;
     Context context;
+    GoogleApiClient mGoogleApiClient;
 
     private OnFragmentInteractionListener mListener;
 
@@ -83,6 +94,14 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
         View view = inflater.inflate(R.layout.fragment_google_map, container, false);
 
         context = getActivity();
+
+        if(mGoogleApiClient==null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(context)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
 
         mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -189,6 +208,24 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
         }
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        LatLng location = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+        CameraPosition target = CameraPosition.builder().target(location).zoom(10).build();
+        m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -203,4 +240,17 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    @Override
+    public void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
 }
