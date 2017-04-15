@@ -20,7 +20,7 @@ public class EditAlarmActivity extends AppCompatActivity {
     TextView rangeTextView, ringtoneTextView;
     EditText labelEditText, currentLocationEditText, destinationEditText;
     Spinner rangeSpinner, ringtoneSpinner;
-    RadioButton vibrationRadioButton;
+    SwitchCompat vibrationRadioButton;
     Button saveAlarmButton;
     String position;
     Alarm alarm;
@@ -46,7 +46,7 @@ public class EditAlarmActivity extends AppCompatActivity {
         ringtoneTextView = (TextView)findViewById(R.id.ringtoneTextView);
         rangeSpinner= (Spinner)findViewById(R.id.range_value);
         ringtoneSpinner = (Spinner)findViewById(R.id.spinner_ringtone);
-        vibrationRadioButton = (RadioButton) findViewById(R.id.vibrationRadioButton);
+        vibrationRadioButton = (SwitchCompat) findViewById(R.id.vibrationRadioButton);
         saveAlarmButton = (Button)findViewById(R.id.saveAlarmButton);
     }
 
