@@ -10,8 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/enterPNREditText"
+        android:hint="@string/enter_pnr"
         />
     <Button
+        android:id="@+id/searchPNRButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/enterPNREditText"
@@ -99,5 +101,6 @@
             android:textStyle="bold"
             android:textColor="@color/place_autocomplete_prediction_primary_text"/>
     </RelativeLayout>
+
 
 </RelativeLayout>
