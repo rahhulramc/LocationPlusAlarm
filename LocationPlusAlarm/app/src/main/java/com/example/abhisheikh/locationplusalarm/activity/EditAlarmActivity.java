@@ -32,7 +32,7 @@ public class EditAlarmActivity extends AppCompatActivity {
         Intent intent = getIntent();
         alarm = (Alarm)intent.getParcelableExtra("alarm");
         position = intent.getStringExtra("position");
-        Toast.makeText(this,position,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,position,Toast.LENGTH_SHORT).show();
         setIds();
         setInitialValuesOfAlarm(alarm);
         setOnClickListeners();

@@ -10,4 +10,6 @@
     <string name="search">Search</string>
     <string name="date_Textview">Date:</string>
     <string name="enter_pnr">Enter PNR</string>
+    <string name="invalid_pnr">INVALID PNR!</string>
+    <string name="add">Add</string>
 </resources>
