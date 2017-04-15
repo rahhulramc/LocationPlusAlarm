@@ -20,14 +20,5 @@
         android:layout_centerHorizontal="true"
         android:text="@string/search"/>
 
-    <ScrollView
-        android:layout_below="@id/searchPNRButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/dummyText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
 
 </RelativeLayout>

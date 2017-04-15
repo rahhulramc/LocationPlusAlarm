@@ -41,7 +41,7 @@ public class PNRFragment extends Fragment {
 
     EditText enterPnrEditText;
     Button searchButton;
-    TextView dummy;
+//    TextView dummy;
 
     private OnFragmentInteractionListener mListener;
 
@@ -77,7 +77,7 @@ public class PNRFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_pnr, container, false);
         enterPnrEditText = (EditText)view.findViewById(R.id.enterPNREditText);
         searchButton = (Button)view.findViewById(R.id.searchPNRButton);
-        dummy = (TextView)view.findViewById(R.id.dummyText);
+//        dummy = (TextView)view.findViewById(R.id.dummyText);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +176,7 @@ public class PNRFragment extends Fragment {
         }
 
         protected void jsonParse(String content) {
-            dummy.setText(content);
+//            dummy.setText(content);
         }
 
     }
