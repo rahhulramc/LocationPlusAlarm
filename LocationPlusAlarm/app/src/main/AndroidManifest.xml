@@ -34,7 +34,6 @@
         </activity>
         <activity android:name=".activity.AddAlarm" />
         <activity android:name=".activity.EditAlarmActivity" />
-        <activity android:name=".activity.PNRPop"></activity>
     </application>
 
 </manifest>

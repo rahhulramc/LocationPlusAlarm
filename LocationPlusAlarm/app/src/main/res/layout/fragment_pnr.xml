@@ -17,5 +17,87 @@
         android:layout_below="@id/enterPNREditText"
         android:layout_centerHorizontal="true"
         android:text="@string/search"/>
+    <LinearLayout
+        android:id="@+id/OverallLinearLayout"
+        android:layout_below="@id/enterPNREditText"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+    <LinearLayout
+        android:id="@+id/dateLinearLayout"
+        android:background="?android:selectableItemBackground"
+        android:padding="8dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="Date:"
+            android:textStyle="bold"
+            android:textColor="@color/colorSecondaryText"
+            android:paddingBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryText"
+            android:paddingTop="4dp"
+            android:text="15 March' 2017"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/destinationLinearLayout"
+        android:layout_below="@id/dateLinearLayout"
+        android:clickable="true"
+        android:background="?android:selectableItemBackground"
+        android:padding="8dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorSecondaryText"
+            android:text="Destination:"
+            android:paddingBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/destinationTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryText"
+            android:paddingTop="4dp"
+            tools:text="New Delhi"/>
+
+    </LinearLayout>
+    </LinearLayout>
+    <RelativeLayout
+        android:padding="8dp"
+        android:orientation="vertical"
+        android:layout_below="@id/enterPNREditText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <TextView
+            android:textAlignment="center"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/invalidPNR"
+            android:text="INVALID PNR!"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/place_autocomplete_prediction_primary_text"/>
+    </RelativeLayout>
 
 </RelativeLayout>
