@@ -12,12 +12,16 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.abhisheikh.locationplusalarm.R;
 import com.example.abhisheikh.locationplusalarm.activity.AlarmListActivity;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,12 +67,20 @@ public class GeoFenceTransitionsIntentService extends IntentService {
                 geofenceTransition==Geofence.GEOFENCE_TRANSITION_EXIT||
                 geofenceTransition==Geofence.GEOFENCE_TRANSITION_DWELL){
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-            String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                    this,
-                    geofenceTransition,
-                    triggeringGeofences
-            );
-            sendNotification(geofenceTransitionDetails);
+            String locationName = "",ringToneID = "";
+            boolean vibration = false;
+            try {
+                JSONObject baseObject = new JSONObject(triggeringGeofences.get(0).getRequestId());
+                locationName = baseObject.getString("location_name");
+                ringToneID = baseObject.getString("ringtone_id");
+                vibration = baseObject.getBoolean("vibration");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String geofenceTransitionDetails = getTransitionString(geofenceTransition)+": "+locationName;
+            //Toast.makeText(getBaseContext(),geofenceTransitionDetails,Toast.LENGTH_SHORT).show();
+            //sendNotification(geofenceTransitionDetails);
+
             Log.i(TAG, geofenceTransitionDetails);
         } else {
             // Log the error.
@@ -119,6 +131,7 @@ public class GeoFenceTransitionsIntentService extends IntentService {
         mNotificationManager.notify(0, builder.build());
     }
 
+/*
     private String getGeofenceTransitionDetails(
             Context context,
             int geofenceTransition,
@@ -135,6 +148,7 @@ public class GeoFenceTransitionsIntentService extends IntentService {
 
         return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
     }
+*/
 
     private String getTransitionString(int transitionType) {
         switch (transitionType) {
