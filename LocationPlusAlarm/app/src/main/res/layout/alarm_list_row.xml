@@ -25,34 +25,33 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
         android:layout_toLeftOf="@id/deleteAlarmButton" />
-    
-    <TextView
-        android:id="@+id/destinationNameTextView"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textColor="@color/colorPrimaryText"
-        android:layout_toLeftOf="@id/alarmActivateSwitch"
-        android:layout_alignParentLeft="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="New Delhi"
-        />
 
     <TextView
         android:id="@+id/destinationLabelTextView"
-        android:textSize="14sp"
-        android:textColor="@color/colorSecondaryText"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryText"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:layout_below="@id/destinationNameTextView"
         android:layout_toLeftOf="@id/alarmActivateSwitch"
         android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Business Meeting"
         />
-
+    
+    <TextView
+        android:id="@+id/destinationNameTextView"
+        android:textSize="14sp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_below="@id/destinationLabelTextView"
+        android:textColor="@color/colorSecondaryText"
+        android:layout_toLeftOf="@id/alarmActivateSwitch"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="New Delhi"
+        />
 
 </RelativeLayout>

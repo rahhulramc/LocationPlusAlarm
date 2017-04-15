@@ -110,16 +110,19 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private String getCurrentLocationName(Location location){
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses = null;
-        try {
-            addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(location!=null) {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = null;
+            try {
+                addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return addresses.get(0).getFeatureName() + ", " +
+                    addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " +
+                    addresses.get(0).getCountryName();
         }
-        return addresses.get(0).getFeatureName() + ", " +
-                addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " +
-                addresses.get(0).getCountryName();
+        return null;
     }
 
     @Override

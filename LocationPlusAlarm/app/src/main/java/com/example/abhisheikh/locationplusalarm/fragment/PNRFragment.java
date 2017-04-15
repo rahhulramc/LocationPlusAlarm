@@ -29,6 +29,9 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -273,7 +276,7 @@ public class PNRFragment extends Fragment {
     }
 
     private class FetchLatLng extends AsyncTask<String,Void,Void>{
-        private final HttpClient Client = new DefaultHttpClient();
+        private HttpClient Client;
         private String Content;
         private String Error = null;
 
@@ -287,6 +290,7 @@ public class PNRFragment extends Fragment {
                 // Server url call by GET method
                 HttpGet httpget = new HttpGet(urls[0]);
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                Client = new DefaultHttpClient();
                 Content = Client.execute(httpget, responseHandler);
 
             } catch (ClientProtocolException e) {

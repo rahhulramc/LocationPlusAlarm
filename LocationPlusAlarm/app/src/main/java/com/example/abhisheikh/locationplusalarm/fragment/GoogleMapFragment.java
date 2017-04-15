@@ -211,9 +211,11 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        LatLng location = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-        CameraPosition target = CameraPosition.builder().target(location).zoom(10).build();
-        m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+        if(myLocation!=null) {
+            LatLng location = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            CameraPosition target = CameraPosition.builder().target(location).zoom(10).build();
+            m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+        }
     }
 
     @Override

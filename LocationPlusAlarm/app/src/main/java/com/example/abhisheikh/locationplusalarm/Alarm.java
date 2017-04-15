@@ -30,6 +30,16 @@ public class Alarm implements Parcelable {
         this.vibrate = true;
     }
 
+    public Alarm(Alarm alarm){
+        this.location = alarm.getLocation();
+        this.locationName = alarm.getLocationName();
+        this.label = alarm.getLabel();
+        this.range = alarm.getRange();
+        this.ringtoneId = alarm.getRingtoneId();
+        this.active = alarm.isActive();
+        this.vibrate = alarm.isVibrate();
+    }
+
     public Alarm(LatLng location, String label, int range, int ringtoneId, boolean active, boolean vibrate) {
         this.location = location;
         this.label = label;
