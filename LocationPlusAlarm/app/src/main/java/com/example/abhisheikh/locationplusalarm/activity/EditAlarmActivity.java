@@ -100,6 +100,8 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
             ringtoneList.add(entry.getKey());
         }
 
+        //Toast.makeText(this,ringtoneMap.get("Oxygen"),Toast.LENGTH_SHORT).show();
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, ringtoneList);
 
@@ -115,7 +117,7 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         Map<String, String> list = new HashMap<>();
         while (cursor.moveToNext()) {
             String notificationTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
-            String notificationUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
+            String notificationUri = manager.getRingtoneUri(cursor.getPosition()).toString();
 
             list.put(notificationTitle, notificationUri);
         }

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.abhisheikh.locationplusalarm.Alarm;
 import com.example.abhisheikh.locationplusalarm.R;
+import com.example.abhisheikh.locationplusalarm.StaticWakeLock;
 import com.example.abhisheikh.locationplusalarm.activity.AlarmListActivity;
 import com.example.abhisheikh.locationplusalarm.activity.RingingActivity;
 import com.google.android.gms.location.Geofence;
@@ -35,6 +36,7 @@ import java.util.List;
 public class GeoFenceTransitionsIntentService extends IntentService {
 
     protected static final String TAG = "gfservice";
+    String requestID;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -67,23 +69,29 @@ public class GeoFenceTransitionsIntentService extends IntentService {
         //Alarm alarm = intent.getParcelableExtra("alarm");
 
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
+
         if(geofenceTransition== Geofence.GEOFENCE_TRANSITION_ENTER||
                 geofenceTransition==Geofence.GEOFENCE_TRANSITION_EXIT||
                 geofenceTransition==Geofence.GEOFENCE_TRANSITION_DWELL){
+
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
             String locationName = "",ringToneID = "";
             boolean vibration = false;
+
             try {
-                JSONObject baseObject = new JSONObject(triggeringGeofences.get(0).getRequestId());
+                requestID = triggeringGeofences.get(0).getRequestId();
+                JSONObject baseObject = new JSONObject(requestID);
                 locationName = baseObject.getString("location_name");
                 ringToneID = baseObject.getString("ringtone_id");
                 vibration = baseObject.getBoolean("vibration");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             String geofenceTransitionDetails = getTransitionString(geofenceTransition)+": "+locationName;
             Toast.makeText(getBaseContext(),ringToneID,Toast.LENGTH_SHORT).show();
             sendNotification(geofenceTransitionDetails);
+            StaticWakeLock.lockOn(getApplicationContext());
             startRingingActivity(geofenceTransitionDetails,ringToneID,vibration);
 
             Log.i(TAG, geofenceTransitionDetails);
@@ -98,6 +106,7 @@ public class GeoFenceTransitionsIntentService extends IntentService {
         Intent intent = new Intent(getApplicationContext(), RingingActivity.class);
         intent.putExtra("notification",notificationDetail)
                 .putExtra("ringtone_id",ringtoneID)
+                .putExtra("request_id",requestID)
                 .putExtra("vibration",vibration);
         //intent.putExtra("alarm",alarm);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
