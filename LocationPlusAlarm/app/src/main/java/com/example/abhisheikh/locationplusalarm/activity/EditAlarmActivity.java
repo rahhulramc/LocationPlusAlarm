@@ -16,6 +16,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -67,6 +69,11 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         alarm = (Alarm) intent.getParcelableExtra("alarm");
         position = intent.getStringExtra("position");
 
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle(R.string.edit_details);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
@@ -84,7 +91,9 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
     private void setIds() {
         labelEditText = (EditText) findViewById(R.id.labelEditText);
         currentLocationEditText = (EditText) findViewById(R.id.current_location_textview);
+        currentLocationEditText.setEnabled(false);
         destinationEditText = (EditText) findViewById(R.id.destinationEditText);
+        destinationEditText.setEnabled(false);
         rangeSpinner = (Spinner) findViewById(R.id.range_value);
         ringtoneSpinner = (Spinner) findViewById(R.id.spinner_ringtone);
         setSpinner();
@@ -306,5 +315,16 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
     @Override
     public void onResult(@NonNull Status status) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Announcement button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

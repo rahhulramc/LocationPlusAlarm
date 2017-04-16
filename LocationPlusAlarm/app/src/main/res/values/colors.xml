@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#673ab7</color>
-    <color name="colorAccent">#01579B</color>
-    <color name="colorPrimaryLight">#9575CD</color>
+    <color name="colorPrimary">#00AA8D</color>
+    <color name="colorPrimaryDark">#008975</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryLight">#00BF9A</color>
     <color name="colorTextIcons">#FFFFFF</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#757575</color>
@@ -11,4 +11,5 @@
     <color name="circleStroke">#407CB342</color>
     <color name="circleFill">#40FFF176</color>
     <color name="colorPlus">#FFFFFF</color>
+    <color name="splash_text">#FFFFFF</color>
 </resources>

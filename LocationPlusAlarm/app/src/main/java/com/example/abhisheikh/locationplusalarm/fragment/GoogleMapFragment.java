@@ -164,7 +164,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                 if (marker != null)
                     marker.remove();
                 String url = "http://maps.google.com/maps/api/geocode/json?address=" +
-                        searchLocationEditText.getText().toString()+ "&sensor=false";
+                        searchLocationEditText.getText().toString().replace(" ","%20")+ "&sensor=false";
                 new FetchLatLng().execute(url);
                 setLocationButton.setVisibility(View.VISIBLE);
                 InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -411,13 +411,15 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
             // Close progress dialog
             searchedLocation = jsonParse(Content);
-            MarkerOptions markerOptions = new MarkerOptions().position(searchedLocation);
-            if(marker!=null){
-                marker.remove();
+            if(searchedLocation!=null) {
+                MarkerOptions markerOptions = new MarkerOptions().position(searchedLocation);
+                if (marker != null) {
+                    marker.remove();
+                }
+                CameraPosition target = CameraPosition.builder().target(searchedLocation).zoom(10).build();
+                m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                marker = m_map.addMarker(markerOptions);
             }
-            CameraPosition target = CameraPosition.builder().target(searchedLocation).zoom(10).build();
-            m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
-            marker = m_map.addMarker(markerOptions);
         }
 
         private LatLng jsonParse(String Content){

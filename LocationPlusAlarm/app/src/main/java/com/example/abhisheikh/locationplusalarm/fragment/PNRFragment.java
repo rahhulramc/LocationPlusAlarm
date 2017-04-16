@@ -236,8 +236,10 @@ public class PNRFragment extends Fragment {
 
             String location = jsonParse(Content);
             //Toast.makeText(getContext(),location,LENGTH_SHORT).show();
-            String url = "http://maps.google.com/maps/api/geocode/json?address=" +location+ "&sensor=false";
-            new FetchLatLng().execute(url);
+            if(location!=null) {
+                String url = "http://maps.google.com/maps/api/geocode/json?address=" + location.replace(" ","%20") + "&sensor=false";
+                new FetchLatLng().execute(url);
+            }
 
             dialog.cancel();
 
