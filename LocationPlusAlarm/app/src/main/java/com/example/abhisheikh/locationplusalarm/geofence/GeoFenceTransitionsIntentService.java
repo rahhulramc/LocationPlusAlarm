@@ -14,8 +14,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.abhisheikh.locationplusalarm.Alarm;
 import com.example.abhisheikh.locationplusalarm.R;
 import com.example.abhisheikh.locationplusalarm.activity.AlarmListActivity;
+import com.example.abhisheikh.locationplusalarm.activity.RingingActivity;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
@@ -62,6 +64,8 @@ public class GeoFenceTransitionsIntentService extends IntentService {
             return;
         }
 
+        //Alarm alarm = intent.getParcelableExtra("alarm");
+
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
         if(geofenceTransition== Geofence.GEOFENCE_TRANSITION_ENTER||
                 geofenceTransition==Geofence.GEOFENCE_TRANSITION_EXIT||
@@ -78,8 +82,9 @@ public class GeoFenceTransitionsIntentService extends IntentService {
                 e.printStackTrace();
             }
             String geofenceTransitionDetails = getTransitionString(geofenceTransition)+": "+locationName;
-            //Toast.makeText(getBaseContext(),geofenceTransitionDetails,Toast.LENGTH_SHORT).show();
-            //sendNotification(geofenceTransitionDetails);
+            Toast.makeText(getBaseContext(),ringToneID,Toast.LENGTH_SHORT).show();
+            sendNotification(geofenceTransitionDetails);
+            startRingingActivity(geofenceTransitionDetails,ringToneID,vibration);
 
             Log.i(TAG, geofenceTransitionDetails);
         } else {
@@ -87,6 +92,16 @@ public class GeoFenceTransitionsIntentService extends IntentService {
             Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
         }
 
+    }
+
+    private void startRingingActivity(String notificationDetail, String ringtoneID, boolean vibration){
+        Intent intent = new Intent(getApplicationContext(), RingingActivity.class);
+        intent.putExtra("notification",notificationDetail)
+                .putExtra("ringtone_id",ringtoneID)
+                .putExtra("vibration",vibration);
+        //intent.putExtra("alarm",alarm);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void sendNotification(String notificationDetails) {

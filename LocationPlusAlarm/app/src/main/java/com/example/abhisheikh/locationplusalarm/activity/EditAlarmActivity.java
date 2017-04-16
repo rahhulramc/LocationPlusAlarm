@@ -149,7 +149,7 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
                 alarm.setVibrate(vibrationRadioButton.isChecked());
 
                 if (position == null){
-                    alarm.setRange(500);
+                    alarm.setRange(Integer.parseInt(rangeSpinner.getSelectedItem().toString()));
                     addGeofence(alarm);
                 }
 
@@ -183,7 +183,7 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
                         alarm.getLocation().longitude,
                         alarm.getRange())
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                .setExpirationDuration(864000)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -199,7 +199,7 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         LocationServices.GeofencingApi.addGeofences(
                 mGoogleApiClient,
                 getGeofencingRequest(geofence),
-                getGeofencePendingIntent()
+                getGeofencePendingIntent(alarm)
         ).setResultCallback(this);
     }
 
@@ -210,8 +210,9 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         return builder.build();
     }
 
-    private PendingIntent getGeofencePendingIntent(){
+    private PendingIntent getGeofencePendingIntent(Alarm alarm){
         Intent intent = new Intent(this,GeoFenceTransitionsIntentService.class);
+        //intent.putExtra("alarm",alarm);
 
         PendingIntent pendingIntent = PendingIntent.getService(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;

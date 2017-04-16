@@ -222,8 +222,10 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(myLocation!=null) {
             LatLng location = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions().position(location);
             CameraPosition target = CameraPosition.builder().target(location).zoom(10).build();
             m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+            marker = m_map.addMarker(markerOptions);
         }
     }
 
