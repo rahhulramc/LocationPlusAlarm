@@ -130,7 +130,7 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         destinationEditText.setText(alarm.getLocationName());
         //Toast.makeText(getBaseContext(),""+alarm.getRange(),Toast.LENGTH_SHORT).show();
         String [] rangeList = getResources().getStringArray(R.array.range);
-        int rangeIndex = 3;
+        int rangeIndex = 4;
         for(int i = 0;i<rangeList.length;i++){
             if(rangeList[i].equals(""+alarm.getRange()))
                 rangeIndex = i;
@@ -144,6 +144,7 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         saveAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Alarm oldAlarm = new Alarm(alarm);
                 alarm.setLabel(labelEditText.getText().toString());
                 alarm.setLocationName(destinationEditText.getText().toString());
                 alarm.setRange(Integer.parseInt(rangeSpinner.getSelectedItem().toString()));
@@ -152,6 +153,9 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
 
                 if (position == null){
                     alarm.setRange(Integer.parseInt(rangeSpinner.getSelectedItem().toString()));
+                    if(alarm.isActive()) {
+                        removeGeofence(oldAlarm);
+                    }
                     addGeofence(alarm);
                 }
 
@@ -162,6 +166,29 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
                 finish();
             }
         });
+    }
+
+    private void removeGeofence(Alarm alarm){
+        if(mGoogleApiClient.isConnected()) {
+            LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, getRequestIDList(alarm));
+            //Toast.makeText(context,"removed",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //Toast.makeText(context,"Not connected",Toast.LENGTH_SHORT).show();
+    }
+
+    private List<String> getRequestIDList(Alarm alarm){
+        JSONObject object= new JSONObject();
+        try {
+            object.put("location_name",alarm.getLocationName());
+            object.put("ringtone_id",alarm.getRingtoneId());
+            object.put("vibration",alarm.isVibrate());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        List<String> list = new ArrayList<>();
+        list.add(object.toString());
+        return list;
     }
 
     public void addGeofence(Alarm alarm) {

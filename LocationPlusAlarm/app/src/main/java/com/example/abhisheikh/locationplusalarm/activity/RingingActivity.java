@@ -49,7 +49,7 @@ public class RingingActivity extends AppCompatActivity {
         requestID = intent.getStringExtra("request_ID");
 
         //alarm = intent.getParcelableExtra("alarm");
-        Toast.makeText(this,ringtoneID,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,ringtoneID,Toast.LENGTH_SHORT).show();
 
         ringtoneList = getRingtoneMap();
 
@@ -66,7 +66,7 @@ public class RingingActivity extends AppCompatActivity {
             vibrator.vibrate(pattern, 0);
         }
         Uri alarmTone = Uri.parse(ringtoneList.get(ringtoneID));
-        Toast.makeText(this,alarmTone.toString(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,alarmTone.toString(),Toast.LENGTH_SHORT).show();
         try {
             mediaPlayer.setVolume(1.0f, 1.0f);
             mediaPlayer.setDataSource(this,

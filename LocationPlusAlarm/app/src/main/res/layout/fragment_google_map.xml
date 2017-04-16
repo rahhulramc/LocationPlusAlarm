@@ -1,7 +1,8 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context="com.example.abhisheikh.locationplusalarm.fragment.GoogleMapFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,4 +12,51 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.MapFragment"
         />
-</FrameLayout>
+
+    <ImageView
+        android:layout_alignParentRight="true"
+        android:id="@+id/searchImage"
+        android:layout_margin="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/places_ic_search"
+        android:padding="8dp"
+        android:background="@drawable/search_edittext_background"/>
+
+    <LinearLayout
+        android:id="@+id/searchLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="16dp"
+        android:visibility="gone">
+
+        <EditText
+            android:layout_weight="1"
+            android:id="@+id/searchEditText"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/places_ic_search"
+            android:background="@drawable/search_edittext_background"
+            />
+
+        <Button
+            android:layout_weight="3"
+            android:id="@+id/searchLocationButton"
+            android:text="@string/search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/setLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="8dp"
+        android:text="@string/set"
+        android:visibility="gone"/>
+</RelativeLayout>

@@ -24,8 +24,10 @@
     <string name="unknown_geofence_error">Unknown Geofence Error</string>
     <string name="not_connected">Google API Client not connected</string>
     <string name="range_prompt">Select Range</string>
+    <string name="set">Set</string>
     <string-array name="range">
         <item>Choose a range (in metres)</item>
+        <item>50</item>
         <item>100</item>
         <item>200</item>
         <item>500</item>

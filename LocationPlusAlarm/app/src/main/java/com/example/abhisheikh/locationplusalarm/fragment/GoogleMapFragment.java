@@ -9,6 +9,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.abhisheikh.locationplusalarm.Alarm;
@@ -35,6 +41,16 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -62,6 +78,11 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     Location myLocation;
     Context context;
     GoogleApiClient mGoogleApiClient;
+    Button searchLocationButton, setLocationButton;
+    ImageView searchImage;
+    EditText searchLocationEditText;
+    LinearLayout searchLinearLayout;
+    LatLng searchedLocation;
 
     private OnFragmentInteractionListener mListener;
 
@@ -106,10 +127,76 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                     .build();
         }
 
+        setIDs(view);
+        setOnClickListeners();
+
         mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         return view;
+    }
+
+    private void setIDs(View view){
+        searchLocationButton = (Button)view.findViewById(R.id.searchLocationButton);
+        setLocationButton = (Button)view.findViewById(R.id.setLocationButton);
+        searchImage = (ImageView) view.findViewById(R.id.searchImage);
+        searchLocationEditText = (EditText)view.findViewById(R.id.searchEditText);
+        searchLinearLayout = (LinearLayout)view.findViewById(R.id.searchLinearLayout);
+    }
+
+    private void setOnClickListeners(){
+        searchImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchImage.setVisibility(View.GONE);
+                searchLinearLayout.setVisibility(View.VISIBLE);
+                searchLocationEditText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchLocationEditText, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+
+        searchLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (circle != null)
+                    circle.remove();
+                if (marker != null)
+                    marker.remove();
+                String url = "http://maps.google.com/maps/api/geocode/json?address=" +
+                        searchLocationEditText.getText().toString()+ "&sensor=false";
+                new FetchLatLng().execute(url);
+                setLocationButton.setVisibility(View.VISIBLE);
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+            }
+        });
+
+        setLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                List<Address> addresses = null;
+                try {
+                    addresses = geocoder.getFromLocation(searchedLocation.latitude, searchedLocation.longitude, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String locationName = addresses.get(0).getFeatureName() + ", " +
+                        addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " +
+                        addresses.get(0).getCountryName();
+                Alarm alarm = new Alarm(searchedLocation, locationName);
+
+                if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.disconnect();
+                }
+                //Toast.makeText(context,""+mGoogleApiClient.isConnected(),Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getContext(), EditAlarmActivity.class);
+                intent.putExtra("alarm", alarm);
+                startActivityForResult(intent, 1);
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -147,6 +234,12 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         m_map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+                searchImage.setVisibility(View.VISIBLE);
+                searchLinearLayout.setVisibility(View.GONE);
+                setLocationButton.setVisibility(View.VISIBLE);
+                searchedLocation = latLng;
                 if (circle != null)
                     circle.remove();
                 if (marker != null)
@@ -192,7 +285,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                 if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
                     mGoogleApiClient.disconnect();
                 }
-                Toast.makeText(context,""+mGoogleApiClient.isConnected(),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,""+mGoogleApiClient.isConnected(),Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(getContext(), EditAlarmActivity.class);
                 intent.putExtra("alarm", alarm);
@@ -221,11 +314,23 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     public void onConnected(@Nullable Bundle bundle) {
         myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(myLocation!=null) {
-            LatLng location = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions().position(location);
-            CameraPosition target = CameraPosition.builder().target(location).zoom(10).build();
-            m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
-            marker = m_map.addMarker(markerOptions);
+            if(searchedLocation==null) {
+                LatLng location = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                MarkerOptions markerOptions = new MarkerOptions().position(location);
+                CameraPosition target = CameraPosition.builder().target(location).zoom(10).build();
+                m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                if (marker != null)
+                    marker.remove();
+                marker = m_map.addMarker(markerOptions);
+            }
+            else{
+                MarkerOptions markerOptions = new MarkerOptions().position(searchedLocation);
+                CameraPosition target = CameraPosition.builder().target(searchedLocation).zoom(10).build();
+                m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+                if (marker != null)
+                    marker.remove();
+                marker = m_map.addMarker(markerOptions);
+            }
         }
     }
 
@@ -271,4 +376,70 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         super.onPause();
         mGoogleApiClient.disconnect();
     }
+
+    private class FetchLatLng extends AsyncTask<String,Void,Void> {
+        private HttpClient Client;
+        private String Content;
+        private String Error = null;
+
+        @Override
+        protected Void doInBackground(String... urls) {
+            try {
+
+                // Call long running operations here (perform background computation)
+                // NOTE: Don't call UI Element here.
+
+                // Server url call by GET method
+                HttpGet httpget = new HttpGet(urls[0]);
+                ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                Client = new DefaultHttpClient();
+                Content = Client.execute(httpget, responseHandler);
+
+            } catch (ClientProtocolException e) {
+                Error = e.getMessage();
+                cancel(true);
+            } catch (IOException e) {
+                Error = e.getMessage();
+                cancel(true);
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(Void unused) {
+            // NOTE: You can call UI Element here.
+
+            // Close progress dialog
+            searchedLocation = jsonParse(Content);
+            MarkerOptions markerOptions = new MarkerOptions().position(searchedLocation);
+            if(marker!=null){
+                marker.remove();
+            }
+            CameraPosition target = CameraPosition.builder().target(searchedLocation).zoom(10).build();
+            m_map.moveCamera(CameraUpdateFactory.newCameraPosition(target));
+            marker = m_map.addMarker(markerOptions);
+        }
+
+        private LatLng jsonParse(String Content){
+            LatLng latLng = null;
+            try {
+                JSONObject baseOject = new JSONObject(Content);
+                String status = baseOject.getString("status");
+                if(status.equals("OK")){
+                    JSONArray results= baseOject.getJSONArray("results");
+                    JSONObject resultObj = results.getJSONObject(0);
+                    JSONObject loc = resultObj.getJSONObject("geometry").getJSONObject("location");
+                    double lat = loc.getDouble("lat");
+                    double lng = loc.getDouble("lng");
+                    latLng = new LatLng(lat,lng);
+
+//                    Toast.makeText(getContext(),"Lat: "+lat+" Lng: "+lng,LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return latLng;
+        }
+    }
+
 }

@@ -89,7 +89,7 @@ public class GeoFenceTransitionsIntentService extends IntentService {
             }
 
             String geofenceTransitionDetails = getTransitionString(geofenceTransition)+": "+locationName;
-            Toast.makeText(getBaseContext(),ringToneID,Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getBaseContext(),ringToneID,Toast.LENGTH_SHORT).show();
             sendNotification(geofenceTransitionDetails);
             StaticWakeLock.lockOn(getApplicationContext());
             startRingingActivity(geofenceTransitionDetails,ringToneID,vibration);
