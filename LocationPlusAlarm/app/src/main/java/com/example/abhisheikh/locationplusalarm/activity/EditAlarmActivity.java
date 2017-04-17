@@ -19,6 +19,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -146,6 +147,22 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         }
         rangeSpinner.setSelection(rangeIndex);
         vibrationRadioButton.setChecked(alarm.isVibrate());
+
+        int ringtoneIndex = 0;
+        if(alarm.getRingtoneId()!=null) {
+            Adapter adapter = ringtoneSpinner.getAdapter();
+            List<String> ringtoneList = new ArrayList<>();
+            for (int i = 0; i < adapter.getCount(); i++) {
+                ;
+                ringtoneList.add(adapter.getItem(i).toString());
+            }
+            for (int i = 0; i < ringtoneList.size(); i++) {
+                if (alarm.getRingtoneId().equals(ringtoneList.get(i).toString())) {
+                    ringtoneIndex = i;
+                }
+            }
+        }
+        ringtoneSpinner.setSelection(ringtoneIndex);
     }
 
     private void setOnClickListeners() {
