@@ -153,26 +153,29 @@ public class EditAlarmActivity extends AppCompatActivity implements GoogleApiCli
         saveAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Alarm oldAlarm = new Alarm(alarm);
-                alarm.setLabel(labelEditText.getText().toString());
-                alarm.setLocationName(destinationEditText.getText().toString());
-                alarm.setRange(Integer.parseInt(rangeSpinner.getSelectedItem().toString()));
-                alarm.setRingtoneId(ringtoneSpinner.getSelectedItem().toString());
-                alarm.setVibrate(vibrationRadioButton.isChecked());
-
-                if (position == null){
+                if (rangeSpinner.getSelectedItemPosition() != 0) {
+                    Alarm oldAlarm = new Alarm(alarm);
+                    alarm.setLabel(labelEditText.getText().toString());
+                    alarm.setLocationName(destinationEditText.getText().toString());
                     alarm.setRange(Integer.parseInt(rangeSpinner.getSelectedItem().toString()));
-                    if(alarm.isActive()) {
-                        removeGeofence(oldAlarm);
-                    }
-                    addGeofence(alarm);
-                }
+                    alarm.setRingtoneId(ringtoneSpinner.getSelectedItem().toString());
+                    alarm.setVibrate(vibrationRadioButton.isChecked());
 
-                Intent intent = new Intent();
-                intent.putExtra("alarm", alarm);
-                intent.putExtra("position", position);
-                setResult(RESULT_OK, intent);
-                finish();
+                    if (position == null) {
+                        alarm.setRange(Integer.parseInt(rangeSpinner.getSelectedItem().toString()));
+                        if (alarm.isActive()) {
+                            removeGeofence(oldAlarm);
+                        }
+                        addGeofence(alarm);
+                    }
+
+                    Intent intent = new Intent();
+                    intent.putExtra("alarm", alarm);
+                    intent.putExtra("position", position);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+                else Toast.makeText(getBaseContext(),R.string.invalid_range,Toast.LENGTH_SHORT).show();
             }
         });
     }
